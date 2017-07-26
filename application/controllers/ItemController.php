@@ -1,21 +1,24 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2017/7/25
- * Time: 21:36
- */
+ 
 class ItemController extends Controller
 {
     // 首页方法，测试框架自定义DB查询
     public function index()
     {
-        $items = (new ItemModel)->selectAll();
+        $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+
+        if ($keyword) {
+            $items = (new ItemModel())->search($keyword);
+        } else {
+            $items = (new ItemModel)->selectAll();
+        }
 
         $this->assign('title', '全部条目');
+        $this->assign('keyword', $keyword);
         $this->assign('items', $items);
+        $this->render();
     }
-
+    
     // 添加记录，测试框架DB记录创建（Create）
     public function add()
     {
@@ -24,17 +27,25 @@ class ItemController extends Controller
 
         $this->assign('title', '添加成功');
         $this->assign('count', $count);
+        $this->render();
     }
-
-    // 查看记录，测试框架DB记录读取（Read）
-    public function view($id = null)
+    
+    // 操作管理
+    public function manage($id = 0)
     {
-        $item = (new ItemModel)->select($id);
+        $item = array();
+        $postUrl = '/item/add';
+        if ($id) {
+            $item = (new ItemModel)->select($id);
+            $postUrl = '/item/update';
+        }
 
-        $this->assign('title', '正在查看' . $item['item_name']);
+        $this->assign('title', '管理条目');
         $this->assign('item', $item);
+        $this->assign('postUrl', $postUrl);
+        $this->render();
     }
-
+    
     // 更新记录，测试框架DB记录更新（Update）
     public function update()
     {
@@ -43,8 +54,9 @@ class ItemController extends Controller
 
         $this->assign('title', '修改成功');
         $this->assign('count', $count);
+        $this->render();
     }
-
+    
     // 删除记录，测试框架DB记录删除（Delete）
     public function delete($id = null)
     {
@@ -52,5 +64,6 @@ class ItemController extends Controller
 
         $this->assign('title', '删除成功');
         $this->assign('count', $count);
+        $this->render();
     }
 }
