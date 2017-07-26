@@ -1,5 +1,4 @@
 <?php
- 
 class ItemController extends Controller
 {
     // 首页方法，测试框架自定义DB查询

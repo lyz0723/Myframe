@@ -27,4 +27,5 @@ class Controller
     {
         $this->_view->render();
     }
+
 }
